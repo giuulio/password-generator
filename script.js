@@ -43,29 +43,23 @@ const passwordTransformer = {
    * @param {string} cleanString The input string to split.
    * @returns {string[]} An array of string segments.
    */
+
   splitString(cleanString) {
     const len = cleanString.length;
-    return Math.random() < 0.5
-      ? // Two cuts logic (true branch)
-        (() => {
-          let cut1 = Math.floor(Math.random() * (len - 1)) + 1;
-          let cut2;
-          do {
-            cut2 = Math.floor(Math.random() * (len - 1)) + 1;
-          } while (cut1 === cut2);
-
-          const [first, second] = [cut1, cut2].sort((a, b) => a - b);
-          return [
-            cleanString.slice(0, first),
-            cleanString.slice(first, second),
-            cleanString.slice(second),
-          ];
-        })()
-      : // One cut logic (false branch)
-        (() => {
-          const cut = Math.floor(Math.random() * (len - 1)) + 1;
-          return [cleanString.slice(0, cut), cleanString.slice(cut)];
-        })();
+    const possibleCuts = Array.from({ length: len - 1 }, (_, i) => i + 1); // Generate possible cut indices
+    const numCuts = Math.random() < 0.5 ? 1 : 2; // Decide to make 1 or 2 cuts
+    const cuts = possibleCuts
+      .sort(() => 0.5 - Math.random())
+      .slice(0, numCuts)
+      .sort((a, b) => a - b);
+    const segments = [];
+    let lastCut = 0;
+    for (const cut of cuts) {
+      segments.push(cleanString.slice(lastCut, cut));
+      lastCut = cut;
+    }
+    segments.push(cleanString.slice(lastCut));
+    return segments;
   },
 
   /**
@@ -73,6 +67,7 @@ const passwordTransformer = {
    * @param {string[]} stringSegments An array of string segments.
    * @returns {string[]} The array with one segment capitalized.
    */
+
   switchCasing(stringSegments) {
     const randomIndex = Math.floor(Math.random() * stringSegments.length);
     return stringSegments.map((segment, index) =>
@@ -85,6 +80,7 @@ const passwordTransformer = {
    * @param {string[]} segments The array of string segments to join.
    * @returns {string} The final string with dividers.
    */
+
   addDividers(segments) {
     let finalString = segments[0];
     for (let i = 1; i < segments.length; i++) {
@@ -105,6 +101,7 @@ const passwordTransformer = {
    * @param {string} password The password string to modify.
    * @returns {string} The password with characters substituted.
    */
+
   substituteCharacters(password) {
     const possibleIndices = password
       .split("")
@@ -132,6 +129,7 @@ const passwordTransformer = {
    * @param {string} password The password string to append to.
    * @returns {string} The password with the number appended.
    */
+
   appendNumbers(password) {
     const randomNumber =
       Math.random() < 0.5
@@ -157,6 +155,7 @@ const errorMessage = document.getElementById("error-message");
  * @param {string} input The raw string from the user input field.
  * @returns {{isValid: boolean, error: string|null, cleanInput: string|null}} An object with validation status.
  */
+
 const validateInput = (input) => {
   const cleanInput = input.replace(/\s/g, "").toLowerCase();
   if (cleanInput.length < 4) {
@@ -188,6 +187,7 @@ const validateInput = (input) => {
  * Handles real-time input events for validation feedback and character filtering.
  * @param {Event} e The input event object.
  */
+
 const handleInputChange = (e) => {
   let cleanValue = e.target.value.replace(/[^a-zA-Z\s]/g, "");
   if (cleanValue !== e.target.value) {
@@ -209,6 +209,7 @@ const handleInputChange = (e) => {
  * Displays the generated password in the output field and enables the copy button.
  * @param {string} finalPassword The password to display.
  */
+
 const displayOutput = (finalPassword) => {
   generatedPassword.value = finalPassword;
   copyBtn.disabled = false;
@@ -218,6 +219,7 @@ const displayOutput = (finalPassword) => {
 /**
  * The main function that orchestrates the password generation process.
  */
+
 const generatePassword = () => {
   const validation = validateInput(userInput.value);
   if (!validation.isValid) {
@@ -227,7 +229,8 @@ const generatePassword = () => {
   const segments = passwordTransformer.splitString(validation.cleanInput);
   const casedSegments = passwordTransformer.switchCasing(segments);
   const dividedString = passwordTransformer.addDividers(casedSegments);
-  const substitutedString = passwordTransformer.substituteCharacters(dividedString);
+  const substitutedString =
+    passwordTransformer.substituteCharacters(dividedString);
   const finalPassword = passwordTransformer.appendNumbers(substitutedString);
   displayOutput(finalPassword);
   errorMessage.textContent = "";
@@ -236,6 +239,7 @@ const generatePassword = () => {
 /**
  * Copies the generated password from the output field to the user's clipboard.
  */
+
 const copyToClipboard = async () => {
   const textToCopy = generatedPassword.value;
   if (!textToCopy) return;
@@ -253,6 +257,7 @@ const copyToClipboard = async () => {
 /**
  * Attaches all necessary event listeners to the DOM elements.
  */
+
 const setupEventListeners = () => {
   generateBtn.addEventListener("click", generatePassword);
   copyBtn.addEventListener("click", copyToClipboard);
@@ -266,6 +271,7 @@ const setupEventListeners = () => {
 /**
  * Initializes the application by disabling the copy button and setting up event listeners.
  */
+
 const initializeApp = () => {
   copyBtn.disabled = true;
   setupEventListeners();
