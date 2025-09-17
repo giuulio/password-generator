@@ -15,15 +15,16 @@
     <main>
       <div class="input-section">
         <label for="user-input"
-          >Enter a word or phrase (between 4 and 12 letters) that's easy to
+          >Enter a word or phrase (between 4 and 16 letters) that's easy to
           remember:</label
         >
         <input
           type="text"
           id="user-input"
           placeholder="Example: red giraffe"
-          maxlength="12"
+          maxlength="16"
         />
+        <p id="error-message" class="error-text"></p>
       </div>
 
       <div class="generate-section">

@@ -1,4 +1,7 @@
-// Character substitution mapping
+// =================================================================
+// CONFIGURATION & CONSTANTS
+// =================================================================
+
 const SPECIAL_CHAR_MAP = {
   a: "@",
   b: "8",
@@ -20,7 +23,7 @@ const SPECIAL_CHAR_MAP = {
   r: "|2",
   s: "$",
   t: "7",
-  u: "(_)",
+  u: "v",
   v: "\\/",
   w: "vv",
   x: "%",
@@ -28,21 +31,134 @@ const SPECIAL_CHAR_MAP = {
   z: "2",
 };
 
-// Available divider characters
 const DIVIDERS = ["-", "_", "*", "/", "|", "+", "=", "~", "."];
+
+// =================================================================
+// CORE PASSWORD GENERATION LOGIC
+// =================================================================
+
+const passwordTransformer = {
+  /**
+   * Splits a string into two or three random segments.
+   * @param {string} cleanString The input string to split.
+   * @returns {string[]} An array of string segments.
+   */
+  splitString(cleanString) {
+    const len = cleanString.length;
+    return Math.random() < 0.5
+      ? // Two cuts logic (true branch)
+        (() => {
+          let cut1 = Math.floor(Math.random() * (len - 1)) + 1;
+          let cut2;
+          do {
+            cut2 = Math.floor(Math.random() * (len - 1)) + 1;
+          } while (cut1 === cut2);
+
+          const [first, second] = [cut1, cut2].sort((a, b) => a - b);
+          return [
+            cleanString.slice(0, first),
+            cleanString.slice(first, second),
+            cleanString.slice(second),
+          ];
+        })()
+      : // One cut logic (false branch)
+        (() => {
+          const cut = Math.floor(Math.random() * (len - 1)) + 1;
+          return [cleanString.slice(0, cut), cleanString.slice(cut)];
+        })();
+  },
+
+  /**
+   * Randomly converts one segment of a string array to uppercase.
+   * @param {string[]} stringSegments An array of string segments.
+   * @returns {string[]} The array with one segment capitalized.
+   */
+  switchCasing(stringSegments) {
+    const randomIndex = Math.floor(Math.random() * stringSegments.length);
+    return stringSegments.map((segment, index) =>
+      index === randomIndex ? segment.toUpperCase() : segment
+    );
+  },
+
+  /**
+   * Joins string segments together with random divider characters.
+   * @param {string[]} segments The array of string segments to join.
+   * @returns {string} The final string with dividers.
+   */
+  addDividers(segments) {
+    let finalString = segments[0];
+    for (let i = 1; i < segments.length; i++) {
+      const dividerLength = Math.floor(Math.random() * 3) + 1;
+
+      const divider = Array.from(
+        { length: dividerLength },
+        () => DIVIDERS[Math.floor(Math.random() * DIVIDERS.length)]
+      ).join("");
+
+      finalString += divider + segments[i];
+    }
+    return finalString;
+  },
+
+  /**
+   * Replaces a random number of characters with special characters.
+   * @param {string} password The password string to modify.
+   * @returns {string} The password with characters substituted.
+   */
+  substituteCharacters(password) {
+    const possibleIndices = password
+      .split("")
+      .map((char, index) => (SPECIAL_CHAR_MAP[char.toLowerCase()] ? index : -1))
+      .filter((index) => index !== -1);
+
+    const swapCount = Math.min(
+      possibleIndices.length,
+      Math.floor(Math.random() * 3) + 2
+    );
+
+    const indicesToSwap = new Set(
+      possibleIndices.sort(() => 0.5 - Math.random()).slice(0, swapCount)
+    );
+    return password
+      .split("")
+      .map((char, index) =>
+        indicesToSwap.has(index) ? SPECIAL_CHAR_MAP[char.toLowerCase()] : char
+      )
+      .join("");
+  },
+
+  /**
+   * Appends a random 2 or 3-digit number to the end of a string.
+   * @param {string} password The password string to append to.
+   * @returns {string} The password with the number appended.
+   */
+  appendNumbers(password) {
+    const randomNumber =
+      Math.random() < 0.5
+        ? Math.floor(Math.random() * 90) + 10
+        : Math.floor(Math.random() * 900) + 100;
+    return `${password}${randomNumber}`;
+  },
+};
+
+// =================================================================
+// DOM INTERACTION & EVENT HANDLERS
+// =================================================================
 
 // DOM Elements
 const userInput = document.getElementById("user-input");
 const generateBtn = document.getElementById("generate-btn");
 const generatedPassword = document.getElementById("generated-password");
 const copyBtn = document.getElementById("copy-btn");
+const errorMessage = document.getElementById("error-message");
 
-// 1. Input validation and processing
+/**
+ * Validates the user's input string based on length and character type.
+ * @param {string} input The raw string from the user input field.
+ * @returns {{isValid: boolean, error: string|null, cleanInput: string|null}} An object with validation status.
+ */
 const validateInput = (input) => {
-  // Remove spaces and convert to lowercase
   const cleanInput = input.replace(/\s/g, "").toLowerCase();
-
-  // Check length requirements
   if (cleanInput.length < 4) {
     return {
       isValid: false,
@@ -50,15 +166,13 @@ const validateInput = (input) => {
       cleanInput: null,
     };
   }
-  if (cleanInput.length > 12) {
+  if (cleanInput.length > 16) {
     return {
       isValid: false,
-      error: "Password must be no more than 12 characters long",
+      error: "Password must be no more than 16 characters long",
       cleanInput: null,
     };
   }
-
-  // Check for non-letter characters
   if (!/^[a-zA-Z]+$/.test(cleanInput)) {
     return {
       isValid: false,
@@ -70,146 +184,61 @@ const validateInput = (input) => {
   return { isValid: true, error: null, cleanInput: cleanInput };
 };
 
+/**
+ * Handles real-time input events for validation feedback and character filtering.
+ * @param {Event} e The input event object.
+ */
 const handleInputChange = (e) => {
-  // Allow letters and spaces, but remove all other characters
   let cleanValue = e.target.value.replace(/[^a-zA-Z\s]/g, "");
-
-  // Update input value if it changed (e.g., if a number was typed)
   if (cleanValue !== e.target.value) {
     e.target.value = cleanValue;
   }
-
-  // For visual feedback, check the length *without* spaces
   const lengthCheckValue = cleanValue.replace(/\s/g, "");
   const input = e.target;
-
-  if (lengthCheckValue.length === 0) {
-    input.style.borderColor = "#ccc"; // neutral
-  } else if (lengthCheckValue.length < 4) {
-    input.style.borderColor = "#ff6b6b"; // red - too short
-  } else if (lengthCheckValue.length <= 12) {
-    input.style.borderColor = "#51cf66"; // green - good length
+  input.classList.remove("valid", "invalid"); // Reset classes first
+  if (lengthCheckValue.length > 0) {
+    if (lengthCheckValue.length < 4 || lengthCheckValue.length > 16) {
+      input.classList.add("invalid");
+    } else {
+      input.classList.add("valid");
+    }
   }
 };
 
-// 2. String splitting logic
-const splitString = (cleanString) => {
-  const len = cleanString.length;
-
-  return Math.random() < 0.5
-    ? // Two cuts logic (true branch)
-      (() => {
-        let cut1 = Math.floor(Math.random() * (len - 1)) + 1;
-        let cut2;
-        do {
-          cut2 = Math.floor(Math.random() * (len - 1)) + 1;
-        } while (cut1 === cut2);
-
-        const [first, second] = [cut1, cut2].sort((a, b) => a - b);
-        return [
-          cleanString.slice(0, first),
-          cleanString.slice(first, second),
-          cleanString.slice(second),
-        ];
-      })()
-    : // One cut logic (false branch)
-      (() => {
-        const cut = Math.floor(Math.random() * (len - 1)) + 1;
-        return [cleanString.slice(0, cut), cleanString.slice(cut)];
-      })();
-};
-
-// 3. Random casing transformation
-const switchCasing = (stringSegments) => {
-  const randomIndex = Math.floor(Math.random() * stringSegments.length);
-  return stringSegments.map((segment, index) =>
-    index === randomIndex ? segment.toUpperCase() : segment
-  );
-};
-
-// 4. Insert divider characters
-const addDividers = (segments) => {
-  let finalString = segments[0];
-
-  // Loop through the remaining segments to add dividers in the "gaps"
-  for (let i = 1; i < segments.length; i++) {
-    const dividerLength = Math.floor(Math.random() * 3) + 1;
-
-    const divider = Array.from(
-      { length: dividerLength },
-      () => DIVIDERS[Math.floor(Math.random() * DIVIDERS.length)]
-    ).join("");
-
-    finalString += divider + segments[i];
-  }
-  return finalString;
-};
-
-// 5. Character substitution
-const substituteCharacters = (password) => {
-  const possibleIndices = password
-    .split("")
-    .map((char, index) => (SPECIAL_CHAR_MAP[char.toLowerCase()] ? index : -1))
-    .filter((index) => index !== -1);
-
-  const swapCount = Math.min(
-    possibleIndices.length,
-    Math.floor(Math.random() * 3) + 2
-  );
-
-  const indicesToSwap = new Set(
-    possibleIndices.sort(() => 0.5 - Math.random()).slice(0, swapCount)
-  );
-
-  return password
-    .split("")
-    .map((char, index) =>
-      indicesToSwap.has(index) ? SPECIAL_CHAR_MAP[char.toLowerCase()] : char
-    )
-    .join("");
-};
-
-// 6. Append random numbers
-const appendNumbers = (password) => {
-  const randomNumber =
-    Math.random() < 0.5
-      ? Math.floor(Math.random() * 90) + 10
-      : Math.floor(Math.random() * 900) + 100;
-
-  return `${password}${randomNumber}`;
-};
-
-// 7. Display the result
+/**
+ * Displays the generated password in the output field and enables the copy button.
+ * @param {string} finalPassword The password to display.
+ */
 const displayOutput = (finalPassword) => {
-  generatedPassword.value = finalPassword; // Correct
+  generatedPassword.value = finalPassword;
   copyBtn.disabled = false;
   copyBtn.textContent = "Copy";
 };
 
-// Main password generation orchestrator
+/**
+ * The main function that orchestrates the password generation process.
+ */
 const generatePassword = () => {
   const validation = validateInput(userInput.value);
-
   if (!validation.isValid) {
-    alert(validation.error); // Simple error handling
+    errorMessage.textContent = validation.error;
     return;
   }
-
-  // The chain of functions
-  const segments = splitString(validation.cleanInput);
-  const casedSegments = switchCasing(segments);
-  const dividedString = addDividers(casedSegments);
-  const substitutedString = substituteCharacters(dividedString);
-  const finalPassword = appendNumbers(substitutedString);
-
+  const segments = passwordTransformer.splitString(validation.cleanInput);
+  const casedSegments = passwordTransformer.switchCasing(segments);
+  const dividedString = passwordTransformer.addDividers(casedSegments);
+  const substitutedString = passwordTransformer.substituteCharacters(dividedString);
+  const finalPassword = passwordTransformer.appendNumbers(substitutedString);
   displayOutput(finalPassword);
+  errorMessage.textContent = "";
 };
 
-// Copy to clipboard functionality
+/**
+ * Copies the generated password from the output field to the user's clipboard.
+ */
 const copyToClipboard = async () => {
-  const textToCopy = generatedPassword.value; // Correct
+  const textToCopy = generatedPassword.value;
   if (!textToCopy) return;
-
   try {
     await navigator.clipboard.writeText(textToCopy);
     copyBtn.textContent = "Copied!";
@@ -221,18 +250,25 @@ const copyToClipboard = async () => {
   }
 };
 
-// Event listeners
+/**
+ * Attaches all necessary event listeners to the DOM elements.
+ */
 const setupEventListeners = () => {
   generateBtn.addEventListener("click", generatePassword);
   copyBtn.addEventListener("click", copyToClipboard);
   userInput.addEventListener("input", handleInputChange);
 };
 
-// Initialize the app
+// =================================================================
+// INITIALIZATION
+// =================================================================
+
+/**
+ * Initializes the application by disabling the copy button and setting up event listeners.
+ */
 const initializeApp = () => {
   copyBtn.disabled = true;
   setupEventListeners();
 };
 
-// Start the app when DOM is loaded
 document.addEventListener("DOMContentLoaded", initializeApp);

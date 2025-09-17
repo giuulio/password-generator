@@ -121,6 +121,14 @@ input[type="text"]:hover {
   border-color: var(--primary);
 }
 
+/* Error for invalid input */
+.error-text {
+  color: var(--error);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  min-height: 1.2rem;
+}
+
 /* Enhanced validation states */
 input[type="text"].valid {
   border-color: var(--success);
