@@ -1,115 +1,388 @@
+/* Import Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+/* CSS Custom Properties (Variables) */
+:root {
+  /* Colors - Tech Security Theme */
+  --primary: #1a365d;
+  --accent: #00d4ff;
+  --background: #f8fafc;
+  --text: #2d3748;
+  --text-light: #718096;
+  --success: #38a169;
+  --error: #e53e3e;
+  --white: #ffffff;
+  --border: #e2e8f0;
+
+  /* Typography */
+  --font-main: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
 /* Reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* Basic layout */
 body {
-    min-height: 100vh;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-main);
+  background: linear-gradient(135deg, var(--background) 0%, #ffffff 100%);
+  color: var(--text);
+  line-height: 1.6;
 }
 
 /* Header */
 header {
-    width: 100%;
-    max-width: 500px;
-    margin-bottom: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin-top: 3rem;
+  margin-bottom: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+header p {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  font-weight: 400;
 }
 
 /* Main content */
 main {
-    width: 100%;
-    max-width: 500px;
-    display: flex;
-    flex-direction: column;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(26, 54, 93, 0.1);
 }
 
 /* Form sections */
 .input-section,
 .generate-section,
 .output-section {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Labels */
 label {
-    display: block;
-    margin-bottom: 0.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--primary);
+  font-size: 0.95rem;
 }
 
 /* Input fields */
 input[type="text"] {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ccc;
-    font-size: 1rem;
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid var(--border);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: var(--font-main);
+  background-color: var(--white);
+  transition: all 0.2s ease;
 }
 
 input[type="text"]:focus {
-    outline: none;
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+}
+
+input[type="text"]:hover {
+  border-color: var(--primary);
+}
+
+/* Enhanced validation states */
+input[type="text"].valid {
+  border-color: var(--success);
+}
+
+input[type="text"].invalid {
+  border-color: var(--error);
 }
 
 /* Password display container */
 .output-section {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
 }
 
 .output-section input {
-    flex: 1;
+  flex: 1;
+}
+
+/* Password output special styling */
+#generated-password {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  background-color: #f7fafc;
+  letter-spacing: 0.025em;
 }
 
 /* Buttons */
 button {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: var(--font-main);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
+/* Primary button (Generate) */
 #generate-btn {
-    width: 100%;
+  width: 100%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent));
+  color: var(--white);
+  box-shadow: 0 4px 12px rgba(26, 54, 93, 0.3);
 }
 
 #generate-btn:hover {
-    
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(26, 54, 93, 0.4);
 }
 
 #generate-btn:active {
-    
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(26, 54, 93, 0.3);
+}
+
+/* Secondary button (Copy) */
+#copy-btn {
+  background-color: var(--white);
+  color: var(--primary);
+  border: 2px solid var(--border);
+  min-width: 80px;
 }
 
 #copy-btn:hover {
-    
+  border-color: var(--primary);
+  background-color: var(--primary);
+  color: var(--white);
 }
 
 #copy-btn:active {
-    
+  transform: scale(0.98);
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-    body {
-        padding: 1rem;
-    }
-    
-    .output-section {
-        flex-direction: column;
-    }
-    
-    #copy-btn {
-        width: 100%;
-    }
+#copy-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+#copy-btn:disabled:hover {
+  border-color: var(--border);
+  background-color: var(--white);
+  color: var(--primary);
+}
+
+/* Visual enhancements & Accessibility */
+html {
+    scroll-behavior: smooth;
+  }
+  
+  button:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  
+  .generate-section {
+    margin-top: 0.5rem;
+  }
+
+/* Enhanced Responsive Design */
+@media (max-width: 768px) {
+  body {
+    padding: 1.5rem;
+  }
+
+  header {
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  main {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 1rem;
+  }
+
+  header {
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  header h1 {
+    font-size: 1.75rem;
+    line-height: 1.2;
+  }
+
+  header p {
+    font-size: 1rem;
+  }
+
+  main {
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .output-section {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  #copy-btn {
+    width: 100%;
+    min-width: auto;
+  }
+
+  input[type="text"],
+  button {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 375px) {
+  body {
+    padding: 0.75rem;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  main {
+    padding: 0.875rem;
+  }
+
+  .input-section,
+  .generate-section,
+  .output-section {
+    margin-bottom: 1.25rem;
+  }
+}
+
+/* Large screen enhancements */
+@media (min-width: 1024px) {
+  body {
+    padding: 3rem;
+  }
+
+  header {
+    margin-top: 4rem;
+    margin-bottom: 5rem;
+  }
+
+  header h1 {
+    font-size: 3rem;
+  }
+
+  header p {
+    font-size: 1.25rem;
+  }
+
+  main {
+    max-width: 600px;
+    padding: 3rem;
+  }
+
+  input[type="text"],
+  button {
+    padding: 1rem;
+    font-size: 1.1rem;
+  }
+
+  label {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .input-section,
+  .generate-section,
+  .output-section {
+    margin-bottom: 2rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  body {
+    padding: 4rem;
+  }
+
+  header {
+    margin-top: 5rem;
+    margin-bottom: 6rem;
+  }
+
+  header h1 {
+    font-size: 3.5rem;
+  }
+
+  main {
+    max-width: 650px;
+    padding: 4rem;
+  }
+
+  /* Larger shadows and effects for big screens */
+  main {
+    box-shadow: 0 20px 40px rgba(26, 54, 93, 0.12);
+  }
+
+  #generate-btn {
+    box-shadow: 0 6px 20px rgba(26, 54, 93, 0.25);
+  }
+
+  #generate-btn:hover {
+    box-shadow: 0 8px 25px rgba(26, 54, 93, 0.35);
+  }
 }
