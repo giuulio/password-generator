@@ -1,0 +1,115 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Basic layout */
+body {
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Header */
+header {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Main content */
+main {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form sections */
+.input-section,
+.generate-section,
+.output-section {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Labels */
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* Input fields */
+input[type="text"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+input[type="text"]:focus {
+    outline: none;
+}
+
+/* Password display container */
+.output-section {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+.output-section input {
+    flex: 1;
+}
+
+/* Buttons */
+button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#generate-btn {
+    width: 100%;
+}
+
+#generate-btn:hover {
+    
+}
+
+#generate-btn:active {
+    
+}
+
+#copy-btn:hover {
+    
+}
+
+#copy-btn:active {
+    
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    body {
+        padding: 1rem;
+    }
+    
+    .output-section {
+        flex-direction: column;
+    }
+    
+    #copy-btn {
+        width: 100%;
+    }
+}

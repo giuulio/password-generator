@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Password Generator</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>p@ss-word Rand0m!zer</h1>
+      <p>Generate a safe, memorable password</p>
+    </header>
+
+    <main>
+      <div class="input-section">
+        <label for="user-input"
+          >Enter a word or phrase (between 4 and 12 letters) that's easy to
+          remember:</label
+        >
+        <input
+          type="text"
+          id="user-input"
+          placeholder="Example: red giraffe"
+          maxlength="12"
+        />
+      </div>
+
+      <div class="generate-section">
+        <button id="generate-btn" type="button">Generate Password</button>
+      </div>
+
+      <div class="output-section">
+        <input
+          type="text"
+          id="generated-password"
+          readonly
+          placeholder="Your password will appear here..."
+        />
+        <button id="copy-btn" type="button" title="Copy to clipboard">
+          Copy
+        </button>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
