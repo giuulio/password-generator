@@ -1,7 +1,6 @@
 /* Import Google Fonts */
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap");
 
-/* CSS Custom Properties (Variables) */
 :root {
   /* Colors - Tech Security Theme */
   --primary: #1a365d;
@@ -16,7 +15,11 @@
 
   /* Typography */
   --font-main: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-mono: monospace;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 /* Reset */
@@ -29,22 +32,22 @@
 /* Basic layout */
 body {
   min-height: 100vh;
-  padding: 2rem;
+  padding-inline: 2rem; 
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   font-family: var(--font-main);
   background: linear-gradient(135deg, var(--background) 0%, #ffffff 100%);
   color: var(--text);
   line-height: 1.6;
+  gap: 3rem; 
 }
 
 /* Header */
 header {
   width: 100%;
   max-width: 500px;
-  margin-top: 3rem;
-  margin-bottom: 4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -81,13 +84,23 @@ main {
   box-shadow: 0 10px 25px rgba(26, 54, 93, 0.1);
 }
 
-/* Form sections */
+/* REFACTOR: Separated .output-section from the group to avoid overriding flex-direction immediately. */
 .input-section,
-.generate-section,
-.output-section {
+.generate-section {
   margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
+}
+
+.output-section {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.generate-section {
+  margin-top: 0.5rem;
 }
 
 /* Labels */
@@ -138,24 +151,13 @@ input[type="text"].invalid {
   border-color: var(--error);
 }
 
-/* Password display container */
-.output-section {
-  margin-bottom: 1.5rem;
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-}
-
-.output-section input {
-  flex: 1;
-}
-
 /* Password output special styling */
 #generated-password {
   font-family: var(--font-mono);
   font-weight: 500;
   background-color: #f7fafc;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.1rem;
+  flex: 1; /* Assign flex property here since it's part of the output section */
 }
 
 /* Buttons */
@@ -218,101 +220,85 @@ button {
   color: var(--primary);
 }
 
-/* Visual enhancements & Accessibility */
-html {
-    scroll-behavior: smooth;
-  }
-  
-  button:focus-visible,
-  input:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-  
-  .generate-section {
-    margin-top: 0.5rem;
-  }
+/* Accessibility */
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
-/* Enhanced Responsive Design */
+/* =================================== */
+/* Responsive Design */
+/* =================================== */
+
 @media (max-width: 768px) {
   body {
-    padding: 1.5rem;
+    padding-inline: 1.5rem;
   }
-
   header {
     margin-top: 2rem;
     margin-bottom: 3rem;
   }
-
   header h1 {
     font-size: 2rem;
   }
-
   main {
-    padding: 1.5rem;
+    padding-inline: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
   body {
-    padding: 1rem;
+    padding-inline: 1rem;
   }
-
   header {
-    margin-top: 1.5rem;
-    margin-bottom: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
   }
-
   header h1 {
     font-size: 1.75rem;
     line-height: 1.2;
   }
-
   header p {
     font-size: 1rem;
   }
-
   main {
-    padding: 1rem;
+    padding-inline: 1rem;
     border-radius: 0.5rem;
   }
-
   .output-section {
     flex-direction: column;
     gap: 0.75rem;
   }
-
+  #generated-password {
+    font-size: 0.8rem;
+    padding-inline: 1rem 0.5rem;
+  }
   #copy-btn {
     width: 100%;
     min-width: auto;
   }
-
   input[type="text"],
   button {
-    padding: 1rem;
+    padding-inline: 1rem;
     font-size: 1rem;
   }
-
   label {
     font-size: 0.9rem;
     line-height: 1.4;
   }
 }
 
-/* Very small screens */
 @media (max-width: 375px) {
   body {
-    padding: 0.75rem;
+    padding-inline: 0.75rem;
   }
-
   header h1 {
     font-size: 1.5rem;
   }
-
   main {
-    padding: 0.875rem;
+    padding-inline: 0.875rem;
   }
-
   .input-section,
   .generate-section,
   .output-section {
@@ -323,38 +309,32 @@ html {
 /* Large screen enhancements */
 @media (min-width: 1024px) {
   body {
-    padding: 3rem;
+    padding-inline: 3rem;
   }
-
   header {
     margin-top: 4rem;
     margin-bottom: 5rem;
+    max-width: 600px;
   }
-
   header h1 {
     font-size: 3rem;
   }
-
   header p {
     font-size: 1.25rem;
   }
-
   main {
     max-width: 600px;
-    padding: 3rem;
+    padding-inline: 3rem;
   }
-
   input[type="text"],
   button {
-    padding: 1rem;
+    padding-inline: 1rem;
     font-size: 1.1rem;
   }
-
   label {
     font-size: 1rem;
     margin-bottom: 0.75rem;
   }
-
   .input-section,
   .generate-section,
   .output-section {
@@ -364,32 +344,23 @@ html {
 
 @media (min-width: 1440px) {
   body {
-    padding: 4rem;
+    padding-inline: 4rem;
   }
-
   header {
     margin-top: 5rem;
     margin-bottom: 6rem;
   }
-
   header h1 {
     font-size: 3.5rem;
   }
-
   main {
     max-width: 650px;
-    padding: 4rem;
-  }
-
-  /* Larger shadows and effects for big screens */
-  main {
+    padding-inline: 4rem;
     box-shadow: 0 20px 40px rgba(26, 54, 93, 0.12);
   }
-
   #generate-btn {
     box-shadow: 0 6px 20px rgba(26, 54, 93, 0.25);
   }
-
   #generate-btn:hover {
     box-shadow: 0 8px 25px rgba(26, 54, 93, 0.35);
   }
