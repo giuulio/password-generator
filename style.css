@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap");
 
 :root {
-  /* Colors - Tech Security Theme */
+  /* Colors */
   --primary: #1a365d;
   --accent: #00d4ff;
   --background: #f8fafc;
@@ -31,7 +31,6 @@ html {
 
 /* Basic layout */
 body {
-  min-height: 100vh;
   padding-inline: 2rem; 
   display: flex;
   flex-direction: column;
@@ -41,7 +40,6 @@ body {
   background: linear-gradient(135deg, var(--background) 0%, #ffffff 100%);
   color: var(--text);
   line-height: 1.6;
-  gap: 3rem; 
 }
 
 /* Header */
@@ -52,6 +50,8 @@ header {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  margin-top: 4rem;
+  margin-bottom: 3rem;
 }
 
 header h1 {
@@ -84,7 +84,6 @@ main {
   box-shadow: 0 10px 25px rgba(26, 54, 93, 0.1);
 }
 
-/* REFACTOR: Separated .output-section from the group to avoid overriding flex-direction immediately. */
 .input-section,
 .generate-section {
   margin-bottom: 1.5rem;
@@ -157,7 +156,7 @@ input[type="text"].invalid {
   font-weight: 500;
   background-color: #f7fafc;
   letter-spacing: 0.1rem;
-  flex: 1; /* Assign flex property here since it's part of the output section */
+  flex: 1;
 }
 
 /* Buttons */
@@ -252,11 +251,11 @@ input:focus-visible {
     padding-inline: 1rem;
   }
   header {
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
+    margin-top: 4rem;
+    margin-bottom: 3rem;
   }
   header h1 {
-    font-size: 1.75rem;
+    font-size: 2rem;
     line-height: 1.2;
   }
   header p {
@@ -283,26 +282,38 @@ input:focus-visible {
     padding-inline: 1rem;
     font-size: 1rem;
   }
-  label {
-    font-size: 0.9rem;
-    line-height: 1.4;
-  }
 }
 
 @media (max-width: 375px) {
   body {
     padding-inline: 0.75rem;
   }
+  header {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+  }
   header h1 {
     font-size: 1.5rem;
+  }
+  header p {
+    font-size: 0.875rem;
   }
   main {
     padding-inline: 0.875rem;
   }
-  .input-section,
+  .input-section {
+    margin-bottom: 0.75rem;
+  }
+  .error-text {
+    font-size: 0.7rem;
+  }
   .generate-section,
   .output-section {
     margin-bottom: 1.25rem;
+  }
+  label {
+    font-size: 0.7rem;
+    margin-bottom: 0.4rem;
   }
 }
 
@@ -335,10 +346,12 @@ input:focus-visible {
     font-size: 1rem;
     margin-bottom: 0.75rem;
   }
-  .input-section,
+  .input-section {
+    margin-bottom: 1rem;
+  }
   .generate-section,
   .output-section {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
 }
 
@@ -348,7 +361,7 @@ input:focus-visible {
   }
   header {
     margin-top: 5rem;
-    margin-bottom: 6rem;
+    margin-bottom: 4rem;
   }
   header h1 {
     font-size: 3.5rem;

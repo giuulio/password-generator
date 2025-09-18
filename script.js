@@ -248,7 +248,7 @@ const copyToClipboard = async () => {
     copyBtn.textContent = "Copied!";
     setTimeout(() => {
       copyBtn.textContent = "Copy";
-    }, 2000);
+    }, 1000);
   } catch (err) {
     console.error("Failed to copy text: ", err);
   }
@@ -262,6 +262,11 @@ const setupEventListeners = () => {
   generateBtn.addEventListener("click", generatePassword);
   copyBtn.addEventListener("click", copyToClipboard);
   userInput.addEventListener("input", handleInputChange);
+  userInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      generatePassword();
+    }
+  });
 };
 
 // =================================================================
